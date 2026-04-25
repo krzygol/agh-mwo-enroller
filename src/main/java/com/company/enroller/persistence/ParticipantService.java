@@ -1,7 +1,9 @@
 package com.company.enroller.persistence;
 
 import java.util.Collection;
+import java.util.List;
 
+import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Component;
 
@@ -22,4 +24,60 @@ public class ParticipantService {
 		return query.list();
 	}
 
+	public Participant findByLogin(String login) {
+
+		String hql = "FROM Participant WHERE login = :login";
+
+		Query<Participant> query =
+				connector.getSession().createQuery(hql, Participant.class);
+
+		query.setParameter("login", login);
+
+		return query.uniqueResult();
+	}
+
+	public void add(Participant participant) {
+		Transaction transaction = connector.getSession().beginTransaction();
+		connector.getSession().save(participant);
+		transaction.commit();
+	}
+
+	public void delete(Participant participant) {
+		Transaction transaction = connector.getSession().beginTransaction();
+		connector.getSession().delete(participant);
+		transaction.commit();
+	}
+
+	public void update(Participant participant) {
+		Transaction transaction = connector.getSession().beginTransaction();
+		connector.getSession().merge(participant);
+		transaction.commit();
+	}
+
+	public List<Participant> getAll(String sortBy, String sortOrder) {
+
+		String hql = "FROM Participant";
+
+		if (sortBy != null && sortOrder != null) {
+			hql += " ORDER BY " + sortBy + " " + sortOrder;
+		}
+
+		return connector.getSession()
+				.createQuery(hql, Participant.class)
+				.list();
+	}
+
+	public List<Participant> getAll(String key) {
+
+		String hql =
+				"FROM Participant WHERE login LIKE :key";
+
+		Query<Participant> query =
+				connector.getSession()
+						.createQuery(hql, Participant.class);
+
+		query.setParameter("key", "%" + key + "%");
+
+		return query.list();
+	}
 }
