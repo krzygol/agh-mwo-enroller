@@ -18,12 +18,14 @@ public class ParticipantRestController {
 	@Autowired
 	ParticipantService participantService;
 
+	// Get all participants
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public ResponseEntity<?> getParticipants() {
 		Collection<Participant> participants = participantService.getAll();
 		return new ResponseEntity<Collection<Participant>>(participants, HttpStatus.OK);
 	}
 
+	// 1.1. Find participant by login
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getParticipant(@PathVariable("id") String login) {
 		Participant participant = participantService.findByLogin(login);
@@ -33,17 +35,21 @@ public class ParticipantRestController {
 		return new ResponseEntity<Participant>(participant, HttpStatus.OK);
 	}
 
+	// 1.2. Add new participant
 	@RequestMapping(value = "", method = RequestMethod.POST)
 	public ResponseEntity<?> registerParticipant(@RequestBody Participant participant) {
 		Participant foundParticipant = participantService.findByLogin(participant.getLogin());
+		// 1.3. Check if participant already exist
 		if (foundParticipant != null) {
-			return new ResponseEntity("Already exist", HttpStatus.CONFLICT);
+			return new ResponseEntity("Unable to create. A participant with login "
+					+ participant.getLogin() + " already exist.", HttpStatus.CONFLICT);
 		}
 
 		participantService.add(participant);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
+	// 2.1.1. Remove participant
 	@RequestMapping(value = "", method = RequestMethod.DELETE)
 	public ResponseEntity<?> deleteParticipant(@RequestBody Participant participant) {
 		Participant foundParticipant = participantService.findByLogin(participant.getLogin());
@@ -55,6 +61,7 @@ public class ParticipantRestController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
+	// 2.1.2. Remove participant
 	@RequestMapping(value = "", method = RequestMethod.PUT)
 	public ResponseEntity<?> updateParticipant(@RequestBody Participant participant) {
 		Participant foundParticipant = participantService.findByLogin(participant.getLogin());
@@ -66,6 +73,7 @@ public class ParticipantRestController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
+	// 2.2. Sort participants
 	@RequestMapping(value = "", method = RequestMethod.GET, params = {"sortBy", "sortOrder"})
 	public ResponseEntity<?> getParticipantsSorted(
 			@RequestParam(required = false) String sortBy,
@@ -77,6 +85,7 @@ public class ParticipantRestController {
 		return ResponseEntity.ok(participants);
 	}
 
+	// 2.3. Filter parameter
 	@RequestMapping(value = "", method = RequestMethod.GET, params = {"key"})
 	public ResponseEntity<?> getParticipantsFilter(
 			@RequestParam(required = false) String key) {

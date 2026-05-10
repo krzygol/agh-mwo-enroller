@@ -18,14 +18,14 @@ public class MeetingRestController {
     @Autowired
     MeetingService meetingService;
 
-    // 1. Pobieranie listy wszystkich spotkań
+    // 3.1. Pobieranie listy wszystkich spotkań
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity<?> getMeetings() {
         Collection<Meeting> meetings = meetingService.getAll();
         return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK);
     }
 
-    // 2. Pobieranie listy pojedyncznego spotkania
+    // 3.2. Pobieranie listy pojedyncznego spotkania
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getMeeting(@PathVariable("id") long id) {
         Meeting meeting = meetingService.findById(id);
@@ -35,7 +35,7 @@ public class MeetingRestController {
         return new ResponseEntity<Meeting>(meeting, HttpStatus.OK);
     }
 
-    // 3. Dodawanie spotkań
+    // 3.3. Dodawanie spotkań
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity<?> registerMeeting(@RequestBody Meeting meeting) {
         Meeting foundmeeting = meetingService.findById(meeting.getId());
@@ -47,7 +47,7 @@ public class MeetingRestController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    // 4. Usuwanie spotkań
+    // 3.4. Usuwanie spotkań
     @RequestMapping(value = "", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteMeeting(@RequestBody Meeting meeting) {
         Meeting foundMeeting = meetingService.findById(meeting.getId());
@@ -59,7 +59,7 @@ public class MeetingRestController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    // 5. Aktualizację spotkań
+    // 3.5. Aktualizację spotkań
     @RequestMapping(value = "", method = RequestMethod.PUT)
     public ResponseEntity<?> updateMeeting(@RequestBody Meeting meeting) {
         Meeting foundMeeting = meetingService.findById(meeting.getId());
@@ -70,5 +70,4 @@ public class MeetingRestController {
         meetingService.update(meeting);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 }
