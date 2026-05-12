@@ -1,0 +1,7 @@
+POST http://localhost:8080/participants
+Content-Type: application/json
+
+{
+  "login": "user99",
+  "password": "tajnehaslo"
+}
