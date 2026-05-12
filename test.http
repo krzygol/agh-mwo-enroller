@@ -1,3 +1,5 @@
+@auth_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL215ZW5yb2xsZXJkZW1vIiwic3ViIjoidXNlcjQ1NiIsImlhdCI6MTc3ODYyNDA3MSwiZXhwIjoxODY1MDI3NjcxLCJyb2xlIjoicGFydGljaXBhbnQifQ.SB68fUHMJogi41hVpKMxovVENvxXsngV-okR1jigDf4
+
 ###
 POST http://localhost:8080/tokens
 Content-Type: application/json
@@ -5,4 +7,51 @@ Content-Type: application/json
 {
   "login": "user99",
   "password": "tajnehaslo"
+}
+
+### Authorization by token
+GET http://localhost:8080/meetings
+Authorization: Bearer {{auth_token}}
+
+### Create user
+POST http://localhost:8080/participants
+Content-Type: application/json
+
+{
+  "login": "user123",
+  "password": "tajnehaslo"
+}
+
+### Unauthorized request
+GET http://localhost:8080/meetings
+
+### Login
+POST http://localhost:8080/tokens
+Content-Type: application/json
+
+{
+  "login": "user123",
+  "password": "tajnehaslo"
+}
+
+### Authorized request
+GET http://localhost:8080/meeting
+Authorization: Bearer {{auth_token}}
+
+### Create user
+POST http://localhost:8080/participants
+Content-Type: application/json
+
+{
+  "login": "user456",
+  "password": "małotajnehaslo"
+}
+
+### Login
+POST http://localhost:8080/tokens
+Content-Type: application/json
+
+{
+  "login": "user456",
+  "password": "małotajnehaslo"
 }
