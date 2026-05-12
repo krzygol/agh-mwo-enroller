@@ -18,6 +18,9 @@ public class MeetingRestController {
     @Autowired
     MeetingService meetingService;
 
+    @Autowired
+    ParticipantService participantService;
+
     // 3.1. Pobieranie listy wszystkich spotkań
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity<?> getMeetings() {
@@ -69,5 +72,80 @@ public class MeetingRestController {
 
         meetingService.update(meeting);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    // 4.1.1. Add participant to meeting
+    @RequestMapping(value = "/{meetingId}/participants/{login}", method = RequestMethod.POST)
+    public ResponseEntity<?> addParticipant(
+            @PathVariable long meetingId,
+            @PathVariable String login) {
+
+        Meeting meeting =
+                meetingService.findById(meetingId);
+
+        if (meeting == null) {
+            return new ResponseEntity(
+                    HttpStatus.NOT_FOUND);
+        }
+
+        Participant participant =
+                participantService.findByLogin(login);
+
+        if (participant == null) {
+            return new ResponseEntity(
+                    HttpStatus.NOT_FOUND);
+        }
+
+        meeting.addParticipant(participant);
+
+        meetingService.save(meeting);
+
+        return ResponseEntity.ok(meeting);
+    }
+
+    // 4.1.2. Remove participant from meeting
+    @RequestMapping(value = "/{meetingId}/participants/{login}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> removeParticipant(
+            @PathVariable long meetingId,
+            @PathVariable String login) {
+
+        Meeting meeting =
+                meetingService.findById(meetingId);
+
+        if (meeting == null) {
+            return new ResponseEntity(
+                    HttpStatus.NOT_FOUND);
+        }
+
+        Participant participant =
+                participantService.findByLogin(login);
+
+        if (participant == null) {
+            return new ResponseEntity(
+                    HttpStatus.NOT_FOUND);
+        }
+
+        meeting.removeParticipant(participant);
+
+        meetingService.save(meeting);
+
+        return ResponseEntity.ok().build();
+    }
+
+    // 4.1.3. Get registerd participant from meeting
+    @RequestMapping(value = "/{meetingId}/participants", method = RequestMethod.GET)
+    public ResponseEntity<?> getParticipants(
+            @PathVariable long meetingId) {
+
+        Meeting meeting =
+                meetingService.findById(meetingId);
+
+        if (meeting == null) {
+            return new ResponseEntity(
+                    HttpStatus.NOT_FOUND);
+        }
+
+        return ResponseEntity.ok(
+                meeting.getParticipants());
     }
 }
